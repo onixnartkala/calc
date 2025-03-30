@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONIX - Рассрочка</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #074998;
+            --secondary-color: #ffffff;
+            --accent-color: #ff7043;
+            --text-color: #ffffff;
+            --light-text: #f0f0f0;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --border-radius: 10px;
+            --card-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            padding-bottom: 100px; /* Added space for footer buttons */
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .header h1 img.logo-img {
+            max-height: 400px;
+            max-width: 100%;
+        }
+
+        .header p {
+            color: var(--light-text);
+            font-size: 1rem;
+        }
+
+        .calculator-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .product-section {
+            flex: 3;
+            min-width: 300px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .calculation-section {
+            flex: 1;
+            min-width: 250px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .section-title i {
+            font-size: 1rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .product-grid::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .product-grid::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .product-grid::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        .product-grid::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .product-card {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card-bg);
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-color: var(--secondary-color);
+        }
+
+        .product-card.selected {
+            border-color: var(--secondary-color);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            font-size: 0.8rem;
+            line-height: 1.2;
+            flex-grow: 1;
+        }
+
+        .product-price {
+            color: var(--secondary-color);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            transition: border 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .results-title {
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-label {
+            color: var(--light-text);
+        }
+
+        .result-value {
+            font-weight: 600;
+        }
+
+        .result-value.total {
+            color: var(--secondary-color);
+            font-size: 1rem;
+        }
+
+        .term-options {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .term-option {
+            flex: 1;
+            min-width: 60px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .term-option.selected {
+            border-color: var(--secondary-color);
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .fixed-payment-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border top-color: var(--secondary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin: 20px auto;
+            grid-column: 1 / -1;
+        }
+
+        #selectedProductInfo {
+            font-size: 0.9rem;
+        }
+
+        /* NEW STYLES FOR FOOTER BUTTONS */
+        .footer-buttons {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-btn {
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+            background-color: #25D366; /* WhatsApp green */
+            color: white;
+        }
+
+        .chat-btn:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                flex-direction: column;
+            }
+            
+            .product-section, .calculation-section {
+                width: 100%;
+            }
+            
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            }
+
+            .footer-buttons {
+                padding: 10px;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <img src="1.png" alt="Logo" class="logo-img">
+            </h1>
+            <p>Выберите товар и рассчитайте рассрочку на выбранный товар</p>
+        </div>
+
+        <!-- Основной функционал калькулятора -->
+        <div class="calculator-container">
+            <div class="product-section">
+                <div class="section-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>Выберите товар</h2>
+                </div>
+                
+                <div class="product-grid" id="productGrid">
+                    <div class="loading"></div>
+                </div>
+            </div>
+
+            <div class="calculation-section">
+                <div class="section-title">
+                    <i class="fas fa-calculator"></i>
+                    <h2>Рассчет рассрочки</h2>
+                </div>
+                
+                <div id="selectedProductInfo" style="display: none;">
+                    <div class="input-group">
+                        <label>Выбранный товар</label>
+                        <div class="product-card selected" id="selectedProductDisplay">
+                            <div class="product-image" id="selectedProductImage"></div>
+                            <div class="product-name" id="selectedProductName"></div>
+                            <div class="product-price" id="selectedProductPrice"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="fixed-payment-info">
+                        <div class="result-item">
+                            <span class="result-label">Первоначальный взнос:</span>
+                            <span class="result-value" id="initialPaymentDisplay"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label>Срок рассрочки</label>
+                    <div class="term-options">
+                        <div class="term-option selected" data-months="3">3 мес.</div>
+                        <div class="term-option" data-months="6">6 мес.</div>
+                        <div class="term-option", data-months="9">9 мес.</div>
+                        <div class="term-option" data-months="12">12 мес.</div>
+                    </div>
+                </div>
+                
+                <button class="calculate-btn" id="calculateBtn">
+                    <i class="fas fa-calculator"></i> Рассчитать платеж
+                </button>
+                
+                <div class="results" id="results" style="display: none;">
+                    <div class="results-title">
+                        <i class="fas fa-file-invoice-dollar"></i> Результаты расчета
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Стоимость товара:</span>
+                        <span class="result-value" id="resultProductPrice"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Первоначальный взнос:</span>
+                        <span class="result-value" id="resultInitialPayment"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Срок рассрочки:</span>
+                        <span class="result-value" id="resultLoanTerm"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Еженедельный платеж:</span>
+                        <span class="result-value" id="resultMonthlyPayment"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Общая сумма выплат:</span>
+                        <span class="result-value total" id="resultTotalPayment"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер с кнопкой чата -->
+    <div class="footer-buttons">
+        <button class="chat-btn" id="chatBtn">
+            <i class="fab fa-whatsapp"></i> Чат с менеджером
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация переменных
+            let products = [];
+            let selectedProduct = null;
+            let selectedTerm = 3;
+            
+            // DOM элементы
+            const productGrid = document.getElementById('productGrid');
+            const selectedProductInfo = document.getElementById('selectedProductInfo');
+            const selectedProductName = document.getElementById('selectedProductName');
+            const selectedProductPrice = document.getElementById('selectedProductPrice');
+            const selectedProductImage = document.getElementById('selectedProductImage');
+            const selectedProductDisplay = document.getElementById('selectedProductDisplay');
+            const initialPaymentDisplay = document.getElementById('initialPaymentDisplay');
+            const termOptions = document.querySelectorAll('.term-option');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const results = document.getElementById('results');
+            const resultProductPrice = document.getElementById('resultProductPrice');
+            const resultInitialPayment = document.getElementById('resultInitialPayment');
+            const resultLoanTerm = document.getElementById('resultLoanTerm');
+            const resultMonthlyPayment = document.getElementById('resultMonthlyPayment');
+            const resultTotalPayment = document.getElementById('resultTotalPayment');
+            const chatBtn = document.getElementById('chatBtn');
+            
+            // Пример данных из ONYX.csv (если файл не загрузится)
+            const exampleCSV = `iphone 13;100000;https://c.dns-shop.ru/thumb/st1/fit/500/500/20a91510ba50a0dcacf098664f054fce/b29b8f777cf483f7916d2bfe10bb8241074f98e8f9a7ba4bf623d8efc23a98bf.jpg.webp;11
+samsung galaxy s22;80000;https://c.dns-shop.ru/thumb/st1/fit/500/500/0a7a1e6c8c1d7e2f3f4e5d6c7b8a9f0e/1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef.jpg.webp;11
+xiaomi redmi note 10;50000;https://c.dns-shop.ru/thumb/st1/fit/500/500/1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p/9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba.jpg.webp;11
+macbook air m1;120000;https://c.dns-shop.ru/thumb/st4/fit/500/500/85b88b9f53eb7017f82d319d27b55a5f/edf9e7ab2bb14d2e3e8b6e9b2c8a1f8342b0c8da3c9cc29e19c3a8d0a2e7d60.jpg.webp;11
+ipad pro;90000;https://c.dns-shop.ru/thumb/st1/fit/500/500/1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p/9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba.jpg.webp;11
+samsung tablet;40000;https://c.dns-shork.ru/thumb/st1/fit/500/500/0a7a1e6c8c1d7e2f3f4e5d6c7b8a9f0e/1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef.jpg.webp;11
+apple watch;35000;https://c.dns-shop.ru/thumb/st4/fit/500/500/85b88b9f53eb7017f82d319d27b55a5f/edf9e7ab2bb14d2e3e8b6e9b2c8a1f8342b0c8da3c9cc29e19c3a8d0a2e7d60.jpg.webp;11
+airpods pro;25000;https://c.dns-shop.ru/thumb/st1/fit/500/500/20a91510ba50a0dcacf098664f054fce/b29b8f777cf483f7916d2bfe10bb8241074f98e8f9a7ba4bf623d8efc23a98bf.jpg.webp;11`;
+            
+            // Загружаем данные из CSV файла
+            loadProductsFromCSV();
+            
+            // Слушатели событий
+            calculateBtn.addEventListener('click', calculateLoan);
+            
+            // Обработчики для выбора срока кредита
+            termOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    termOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedTerm = parseInt(option.dataset.months);
+                });
+            });
+            
+            // Обработчик кнопки чата - открывает WhatsApp с номером 79287246454
+            chatBtn.addEventListener('click', function() {
+                const phoneNumber = '79287246454';
+                const message = 'Здравствуйте, у меня вопрос по рассрочке';
+                const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            });
+            
+            // Функция загрузки товаров из CSV
+            function loadProductsFromCSV() {
+                // Пытаемся загрузить реальный файл
+                fetch('ONYX.csv')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Файл не найден');
+                        return response.text();
+                    })
+                    .then(data => parseCSV(data))
+                    .catch(error => {
+                        console.error('Ошибка загрузки CSV файла:', error);
+                        // Используем пример данных, если файл не загрузился
+                        parseCSV(exampleCSV);
+                    });
+            }
+            
+            // Функция парсинга CSV данных
+            function parseCSV(csvData) {
+                const lines = csvData.split('\n');
+                products = [];
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        const parts = line.split(';');
+                        if (parts.length >= 3) {
+                            products.push({
+                                id: i + 1,
+                                name: parts[0].trim(),
+                                price: parseFloat(parts[1].trim()),
+                                image: parts[2].trim(),
+                                monthlyInterest: parts.length >= 4 ? parseFloat(parts[3].trim()) : 11
+                            });
+                        }
+                    }
+                }
+                
+                // Рендерим товары
+                renderProducts();
+            }
+            
+            // Функция рендеринга товаров
+            function renderProducts() {
+                productGrid.innerHTML = '';
+                
+                if (products.length === 0) {
+                    productGrid.innerHTML = '<p style="text-align: center; color: var(--light-text); grid-column: 1 / -1;">Нет доступных товаров</p>';
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.dataset.id = product.id;
+                    
+                    const imgHtml = product.image ? 
+                        `<img src="${product.image}" alt="${product.name}" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=fas fa-box-open></i>'">` : 
+                        '<i class=fas fa-box-open></i>';
+                    
+                    productCard.innerHTML = `
+                        <div class="product-image">
+                            ${imgHtml}
+                        </div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${formatPrice(product.price)} ₽</div>
+                    `;
+                    
+                    productCard.addEventListener('click', () => selectProduct(product));
+                    productGrid.appendChild(productCard);
+                });
+            }
+            
+            // Функция выбора товара
+            function selectProduct(product) {
+                selectedProduct = product;
+                
+                selectedProductName.textContent = product.name;
+                selectedProductPrice.textContent = `${formatPrice(product.price)} ₽`;
+                
+                selectedProductImage.innerHTML = product.image ? 
+                    `<img src="${product.image}" alt="${product.name}" onerror="this.onerror=null; this.innerHTML='<i class=fas fa-box-open></i>'">` : 
+                    '<i class=fas fa-box-open></i>';
+                
+                initialPaymentDisplay.textContent = 'Будет рассчитан';
+                
+                selectedProductInfo.style.display = 'block';
+                results.style.display = 'none';
+                
+                document.querySelectorAll('.product-section .product-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                const selectedCard = document.querySelector(`.product-section .product-card[data-id="${product.id}"]`);
+                if (selectedCard) selectedCard.classList.add('selected');
+            }
+            
+            // Функция расчета кредита
+            function calculateLoan() {
+                if (!selectedProduct) {
+                    alert('Пожалуйста, выберите товар для расчета');
+                    return;
+                }
+                
+                const productPrice = selectedProduct.price;
+                const loanTerm = selectedTerm;
+                const monthlyInterestRate = (selectedProduct.monthlyInterest || 11) / 100;
+                
+                const totalPayment = productPrice + (productPrice * monthlyInterestRate * loanTerm);
+                const initialPayment = Math.round(totalPayment * 0.18);
+                const weeklyPayment = (totalPayment - initialPayment) / (loanTerm * 4);
+                
+                resultProductPrice.textContent = `${formatPrice(productPrice)} ₽`;
+                resultInitialPayment.textContent = `${formatPrice(initialPayment)} ₽`;
+                resultLoanTerm.textContent = `${loanTerm} месяцев`;
+                resultMonthlyPayment.textContent = `${formatPrice(Math.round(weeklyPayment))} ₽`;
+                resultTotalPayment.textContent = `${formatPrice(Math.round(totalPayment))} ₽`;
+                
+                initialPaymentDisplay.textContent = `${formatPrice(initialPayment)} ₽`;
+                
+                results.style.display = 'block';
+            }
+            
+            // Функция форматирования цены
+            function formatPrice(price) {
+                return new Intl.NumberFormat('ru-RU').format(price);
+            }
+        });
+    </script>
+</body>
+</html>
